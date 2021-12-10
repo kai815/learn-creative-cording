@@ -5,8 +5,7 @@ const sketch = (p: p5) => {
     p.createCanvas(p.windowWidth, p.windowHeight);
   };
   p.draw = () => {
-    p.clear();
-    p.circle(p.mouseX, p.mouseY,100)
+    p.circle(p.mouseX, p.mouseY,p.random(100))
   }
 };
 
