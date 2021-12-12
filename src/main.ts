@@ -5,7 +5,9 @@ const sketch = (p: p5) => {
     p.createCanvas(p.windowWidth, p.windowHeight);
   };
   p.draw = () => {
-    p.circle(p.mouseX, p.mouseY,p.random(100))
+    p.strokeWeight(p.random(1,5))
+    p.stroke(p.random(180,255))
+    p.circle(p.width / 2 , p.height /2 ,p.random(50,300))
   }
 };
 
