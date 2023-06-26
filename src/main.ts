@@ -1,10 +1,11 @@
 import p5 from "p5";
 
-let d;
+let d, circleColor, bgColor;
 const sketch = (p: p5) => {
   p.setup = () => {
     p.createCanvas(p.windowWidth, p.windowHeight);
     p.noStroke()
+    circleColor = p.color(p.random(255), p.random(255), p.random(255));
     reset()
   };
   p.draw = () => {
@@ -12,8 +13,8 @@ const sketch = (p: p5) => {
     // 三平方の定理を使って画面中央から画面の端までを計算
     const x1 = 0;
     const y1 = 0;
-    const x2 = p.windowWidth / 2;
-    const y2 = p.windowHeight / 2;
+    const x2 = p.width / 2;
+    const y2 = p.height / 2;
 
     const a = x1 - x2;
     const b = y1 - y2;
@@ -22,15 +23,18 @@ const sketch = (p: p5) => {
     if(d/2 > c){
       reset();
     }
-    p.clear()
+
+    p.background(bgColor);
+    p.fill(circleColor);
     p.circle(p.width/2, p.height /2 , d)
   }
   p.mouseClicked = () => {
     reset();
   }
+  const reset = () => {
+    d = 0;
+    bgColor = circleColor;
+    circleColor = p.color(p.random(255), p.random(255), p.random(255));
+  }
 };
-
-const reset = () => {
-  d = 0;
-}
 new p5(sketch);
