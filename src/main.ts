@@ -1,34 +1,45 @@
 import p5 from "p5";
-const space = 20; //端のスペース
-let a, b, t;
+
+let route, t, i;
 const sketch = (p: p5) => {
   p.setup = () => {
     p.createCanvas(p.windowWidth, p.windowHeight);
-    a = { x: space, y: space };
-    b = { x: p.width - space, y: p.height - space }
-    p.textAlign(p.CENTER, p.CENTER);
+  
+    // 3つの点の座標
+    route = [
+      { x: 100, y: 100 },
+      { x: 300, y: 300 },
+      { x: 300, y: 100 },
+    ];
+  
     t = 0;
+    i = 0;
   };
 
   p.draw = () => {
-    t += 0.005;
-    t %= 1;
-
     p.clear();
 
-    p.stroke(240);
-    p.noFill();
-    p.line(a.x, a.y, b.x, b.y); //真ん中の線
-
-    p.stroke(240);
-    p.fill("#292a33");
-    p.circle(lerp(a.x, b.x, t), lerp(a.y, b.y, t), 10); //tが変化することで円の位置も変化する
-
-    p.noStroke();
-    p.fill(240);
-    p.text("t = " + t.toFixed(2), p.width / 2, space * 2);
-    p.text("a", space, space * 2); //左上のa
-    p.text("b", p.width - space, p.height - space * 2);//右下のb
+    route.forEach((r) => {
+      p.circle(r.x, r.y, 20);
+    });
+  
+    // prev～nextまでを線形補間して、tの位置に円を移動させる
+    const prev = route[i];
+    const next = route[(i + 1) % route.length]; //余りを出す
+  
+    //位置の計算
+    const x = lerp(prev.x, next.x, t); 
+    const y = lerp(prev.y, next.y, t);
+  
+    p.circle(x, y, 10);
+  
+    t += 0.01;
+    //目的の位置についた後
+    if (t > 1) {
+      t = 0;
+      i++;
+      i %= route.length;
+    }
   }
 };
 new p5(sketch);
