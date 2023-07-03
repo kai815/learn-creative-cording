@@ -1,45 +1,21 @@
 import p5 from "p5";
 
-let route, t, i;
+let x,y;
 const sketch = (p: p5) => {
   p.setup = () => {
     p.createCanvas(p.windowWidth, p.windowHeight);
-  
-    // 3つの点の座標
-    route = [
-      { x: 100, y: 100 },
-      { x: 300, y: 300 },
-      { x: 300, y: 100 },
-    ];
-  
-    t = 0;
-    i = 0;
+    x = 0;
+    y = p.height / 2;
   };
 
   p.draw = () => {
     p.clear();
 
-    route.forEach((r) => {
-      p.circle(r.x, r.y, 20);
-    });
-  
-    // prev～nextまでを線形補間して、tの位置に円を移動させる
-    const prev = route[i];
-    const next = route[(i + 1) % route.length]; //余りを出す
-  
-    //位置の計算
-    const x = lerp(prev.x, next.x, t); 
-    const y = lerp(prev.y, next.y, t);
-  
-    p.circle(x, y, 10);
-  
-    t += 0.01;
-    //目的の位置についた後
-    if (t > 1) {
-      t = 0;
-      i++;
-      i %= route.length;
-    }
+    // 中央から左上の距離
+    const max = p.dist(0, 0, p.width / 2, p.height / 2); //distは距離を計算する
+    // 中央からマウスの位置
+    const d = p.dist(p.width / 2, p.height / 2, p.mouseX, p.mouseY);
+    p.circle(p.mouseX, p.mouseY, map(d, 0, max, max, 0));
   }
 };
 new p5(sketch);
@@ -53,4 +29,11 @@ const norm = (v:number,a:number,b:number) => {
 // 下限値 + (上限値 - 下限値) * 割合
 const lerp = (a:number, b:number, t:number) => {
   return a + (b - a) * t;
+}
+
+// マップ：範囲の中にある値の位置を t として、別の範囲での位置 t にある値を返す機能
+// 範囲Bの値 = 線形補間(範囲Bの下限, 範囲Bの上限, 正規化(範囲Aの値, 範囲Aの下限, 範囲Aの上限))
+// v:範囲Aの値,a:範囲Aの下限,b:範囲Aの上限,c:下限Bの下限 d:範囲Bの上限,
+const map = (v:number, a:number, b:number, c:number, d:number) => {
+  return lerp(c, d, norm(v, a, b));
 }
