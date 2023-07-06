@@ -1,30 +1,34 @@
 import p5 from "p5";
 
-let left,right;
+let t,x1,y1,x2,y2;
 const sketch = (p: p5) => {
   p.setup = () => {
     p.createCanvas(p.windowWidth, p.windowHeight);
-    p.noFill();
-  
-    left = 100;
-    right = p.width - 100;
+    x1 = 0;
+    y1 = p.height;
+    x2 = p.width;
+    y2 = 0;
+    t = 0;
   };
 
   p.draw = () => {
+    const x = lerp(x1, x2, tt(t));
+    const y = lerp(y1, y2, tt(t));
+    t += 0.005;
+    if (t > 1) {
+      t = 0;
+    }
     p.clear();
-
-    p.strokeWeight(1);
-    p.stroke(255, 0, 0);
-    p.line(left, 0, left, p.height);//左の線
-    p.line(right, 0, right, p.height);//右の線
-  
-    p.strokeWeight(2);
-    p.stroke(240);
-    //maxとminを組み合わせる
-    const mx = p.max(left, p.min(right, p.mouseX));
-    p.line(mx, 0, mx, p.height);
+    p.circle(x, y, 20);
   }
 };
+
+// イージング関数
+// イージング関数のサイトもあるみたい
+const tt = (t) => {
+  return t * t
+}
+
 new p5(sketch);
 
 // 正規化:値を割合に戻す
