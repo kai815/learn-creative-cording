@@ -1,25 +1,42 @@
 import p5 from "p5";
 
-let t,x1,y1,x2,y2;
+let prevR, nextR, d, t;
 const sketch = (p: p5) => {
   p.setup = () => {
     p.createCanvas(p.windowWidth, p.windowHeight);
-    x1 = 0;
-    y1 = p.height;
-    x2 = p.width;
-    y2 = 0;
-    t = 0;
+    d = 200;
+    reset();
   };
 
   p.draw = () => {
-    const x = lerp(x1, x2, tt(t));
-    const y = lerp(y1, y2, tt(t));
-    t += 0.005;
-    if (t > 1) {
-      t = 0;
+    t += 0.03;
+    // イージング後の余韻を持たせるため、すぐにはリセットしない
+    if (t >= 1.5) {
+      reset();
+      return;
     }
+
+    // t = 1.0 でイージング終了なので、t > 1.0 の場合は画面を更新しない
+    if (t > 1.0) {
+      return;
+    }
+
     p.clear();
-    p.circle(x, y, 20);
+    //直系
+    d = lerp(prevR, nextR, easeInOutBack(t));
+    p.circle(p.width / 2, p.height / 2, d);
+  }
+  const reset =()=>{
+    prevR = d;
+    nextR = p.random(20, 400);
+    t = 0;
+  }
+  // https://easings.net/ja#easeInOutBack
+  const easeInOutBack = (t) => {
+    const c1 = 1.70158;
+    const c2 = c1 * 1.525;
+  
+    return t < 0.5 ? (p.pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2 : (p.pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2;
   }
 };
 
