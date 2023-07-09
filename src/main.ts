@@ -1,52 +1,27 @@
 import p5 from "p5";
 
-let prevR, nextR, d, t;
+let img;
 const sketch = (p: p5) => {
+  p.preload = () => {
+    //一旦dist側にも画像を置いた
+    img = p.loadImage("hideo-beju2.png");
+  }
   p.setup = () => {
     p.createCanvas(p.windowWidth, p.windowHeight);
-    d = 200;
-    reset();
+    // 中央に寄せる
+    const x = (p.width - img.width) / 2;
+    const y = (p.height - img.height) / 2;
+    p.image(img, x, y);
   };
-
-  p.draw = () => {
-    t += 0.03;
-    // イージング後の余韻を持たせるため、すぐにはリセットしない
-    if (t >= 1.5) {
-      reset();
-      return;
-    }
-
-    // t = 1.0 でイージング終了なので、t > 1.0 の場合は画面を更新しない
-    if (t > 1.0) {
-      return;
-    }
-
-    p.clear();
-    //直系
-    d = lerp(prevR, nextR, easeInOutBack(t));
-    p.circle(p.width / 2, p.height / 2, d);
-  }
-  const reset =()=>{
-    prevR = d;
-    nextR = p.random(20, 400);
-    t = 0;
-  }
-  // https://easings.net/ja#easeInOutBack
-  const easeInOutBack = (t) => {
-    const c1 = 1.70158;
-    const c2 = c1 * 1.525;
-  
-    return t < 0.5 ? (p.pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2 : (p.pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2;
-  }
 };
+
+new p5(sketch);
 
 // イージング関数
 // イージング関数のサイトもあるみたい
 const tt = (t) => {
   return t * t
 }
-
-new p5(sketch);
 
 // 正規化:値を割合に戻す
 // (対象の値 - 下限値) / (上限値 - 下限値)
