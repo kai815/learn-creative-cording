@@ -8,10 +8,14 @@ const sketch = (p: p5) => {
   }
   p.setup = () => {
     p.createCanvas(p.windowWidth, p.windowHeight);
-    // 中央に寄せる
-    const x = (p.width - img.width) / 2;
-    const y = (p.height - img.height) / 2;
-    p.image(img, x, y);
+    p.imageMode(p.CENTER);
+
+    const scale = 1;
+    // 左の描画（スムージングあり）
+    p.image(img, p.width / 3, p.height / 2, img.width * scale, img.height * scale);
+    p.noSmooth();
+    // 右の描画（スムージングなしの方が綺麗に見える）
+    p.image(img, (p.width / 3) * 2, p.height / 2, img.width * scale, img.height * scale);
   };
 };
 
